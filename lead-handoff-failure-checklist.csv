@@ -1,0 +1,19 @@
+id,situation,expected_outcome,evidence_scope,test_or_limitation
+F01,Normal valid enquiry,One committed intake and one job,lab test,test_atomic_acceptance
+F02,Failure between intake and job insert,Neither write survives,lab test,test_interruption_rolls_back_both_records
+F03,Exact retry of accepted request,Original acceptance; no duplicate job,lab test,test_same_request_is_not_a_second_acceptance
+F04,Changed request reuses reference,Conflict; old record unchanged,lab test,test_changed_request_cannot_reuse_reference
+F05,Same content with new reference,Separate legitimate enquiry,lab test,test_distinct_enquiries_remain_distinct
+F06,Provider temporarily unavailable,Intake survives; job retries,lab test,test_provider_failure_does_not_lose_accepted_record
+F07,Provider accepted but acknowledgement lost,Stable provider operation key reused,lab test,test_lost_ack_uses_same_provider_key
+F08,Retry budget exhausted,Review state and preserved intake,lab test,test_retry_exhaustion_requires_review
+F09,Worker runs after completion,No repeated send,lab test,test_completed_job_is_not_sent_again
+F10,Empty queue,No provider call,lab test,test_no_jobs_means_no_provider_call
+P01,Process restarts after acceptance,Durable job survives restart,production follow-up,not covered by in-memory lab
+P02,Two workers claim same job,Atomic lease/claim prevents parallel handling,production follow-up,not covered by single-worker lab
+P03,Expired or invalid CAPTCHA,Rejected before intake; no lead event,production follow-up,lab has no HTTP/CAPTCHA
+P04,Malicious or oversized payload,Server rejects input safely,production follow-up,lab assumes validated synthetic payload
+P05,Browser analytics blocked,Accepted enquiry still recoverable,production follow-up,lab sends no browser events
+P06,Provider deduplication window expires,Explicit retry/reconciliation policy,production follow-up,fake provider does not model expiry
+P07,CRM identity differs from enquiry identity,Separate object matching and operation keys,production follow-up,no real CRM adapter
+P08,A job needs manual review,Named operator and documented next action,production follow-up,operational ownership not implemented
